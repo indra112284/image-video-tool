@@ -7,7 +7,6 @@ def main():
     while True:
 
         print("\n========== Image & Video Tool ==========")
-
         print("1. Image Tool")
         print("2. Video Tool")
         print("3. Exit")
