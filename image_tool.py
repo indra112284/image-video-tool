@@ -7,7 +7,7 @@ def image_tool():
     # Get image path
     image_path = input("\nEnter image path: ").strip()
 
-    # Check whether file exists
+    # Check file exists
     if not os.path.exists(image_path):
         print("Error: File does not exist!")
         return
@@ -15,15 +15,9 @@ def image_tool():
     # Read image
     image = cv2.imread(image_path)
 
-    # Check image loaded successfully
     if image is None:
         print("Error: Unable to read image!")
         return
-
-    # -----------------------------
-    # Display Original Image
-    # -----------------------------
-    cv2.imshow("Original Image", image)
 
     # -----------------------------
     # Image Information
@@ -51,12 +45,12 @@ def image_tool():
     print("Color Space : BGR")
 
     # -----------------------------
-    # Create Output Folder
+    # Output Folder
     # -----------------------------
     os.makedirs("output", exist_ok=True)
 
     # -----------------------------
-    # Image Format Conversion
+    # Format Conversion
     # -----------------------------
     print("\nConvert Image Format")
     print("1. JPEG")
@@ -68,28 +62,27 @@ def image_tool():
 
     if choice == "1":
 
-        success = cv2.imwrite("output/converted.jpg", image)
-        print("Saved :", success)
+        cv2.imwrite("output/converted.jpg", image)
+        print("JPEG Saved Successfully")
 
     elif choice == "2":
 
-        success = cv2.imwrite("output/converted.png", image)
-        print("Saved :", success)
+        cv2.imwrite("output/converted.png", image)
+        print("PNG Saved Successfully")
 
     elif choice == "3":
 
-        success = cv2.imwrite("output/converted.bmp", image)
-        print("Saved :", success)
+        cv2.imwrite("output/converted.bmp", image)
+        print("BMP Saved Successfully")
 
     else:
 
         print("Format conversion skipped.")
 
     # -----------------------------
-    # Color Space Conversion
+    # Color Conversion
     # -----------------------------
     print("\nColor Space Conversion")
-
     print("1. RGB")
     print("2. HSV")
     print("3. Grayscale")
@@ -97,44 +90,65 @@ def image_tool():
 
     color_choice = input("Enter choice: ")
 
+    display_image = image.copy()
+    window_name = "Original Image"
+
     if color_choice == "1":
 
-        rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        display_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        success = cv2.imwrite("output/rgb_image.jpg", rgb)
+        cv2.imwrite("output/rgb_image.jpg", display_image)
 
-        print("RGB Saved :", success)
+        window_name = "RGB Image"
 
-        cv2.imshow("RGB Image", rgb)
+        print("RGB Image Saved Successfully")
 
     elif color_choice == "2":
 
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        display_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-        success = cv2.imwrite("output/hsv_image.jpg", hsv)
+        cv2.imwrite("output/hsv_image.jpg", display_image)
 
-        print("HSV Saved :", success)
+        window_name = "HSV Image"
 
-        cv2.imshow("HSV Image", hsv)
+        print("HSV Image Saved Successfully")
 
     elif color_choice == "3":
 
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        display_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        success = cv2.imwrite("output/gray_image.jpg", gray)
+        cv2.imwrite("output/gray_image.jpg", display_image)
 
-        print("Gray Saved :", success)
+        window_name = "Grayscale Image"
 
-        cv2.imshow("Gray Image", gray)
+        print("Grayscale Image Saved Successfully")
 
     else:
 
         print("Color conversion skipped.")
 
     # -----------------------------
-    # Close OpenCV Windows
+    # Resize only for display
     # -----------------------------
-    cv2.waitKey(1000)
-    cv2.destroyAllWindows()
+    h, w = display_image.shape[:2]
 
-    return
+    if w > 1000:
+
+        scale = 1000 / w
+
+        new_w = int(w * scale)
+
+        new_h = int(h * scale)
+
+        display_image = cv2.resize(display_image, (new_w, new_h))
+
+    # -----------------------------
+    # Display Image
+    # -----------------------------
+    cv2.imshow(window_name, display_image)
+
+    print("\nPress any key inside the image window to continue...")
+
+    cv2.waitKey(0)
+
+    cv2.destroyAllWindows()
